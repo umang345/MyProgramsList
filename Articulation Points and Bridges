@@ -1,0 +1,86 @@
+// This program calculates the number of articulation points in the graph in java
+// The graph is an undirectional and connected graph
+// The graph is in form ArrayList<ArrayList> adj
+// This program contains only the function which return number of ariculation points
+
+static int freq=0;
+public static int articulationPoints(ArrayList<ArrayList<Integer>> adj, int V)
+{
+     freq=0;                                       // To check the root condistion seperately 
+     boolean visited[] = new boolean[V];           // Array to store the visited vertices during dfs
+	 int parent[] = new int[V];                    // Array to store the parents of vertices
+	 Arrays.fill(parent,-1);
+	 int dis[] = new int[V];                        // Array to store entry time of each vertex during dfs
+	 int lowest[] = new int[V];                     // Array to store the back edge vertex
+	 
+	 int d = 1;                                     // distance of first node taken as 1
+	 dfs(adj, visited, parent, dis, low,0, 1);
+	 int count = 0;
+	 for(int i=1;i<V;i++)
+	 {
+	      if(lowest[i]>=dis[parent[i]])
+		  {
+		      count++;
+		  }
+	 }
+	 if(freq>1)
+	 {
+	     count++;
+	 }
+	 return count;
+	  
+	
+}
+public static void dfs(ArrayList<ArrayList<Integer>> adj, boolean visited[], int parent[], int dis[], int low[], int i, int d)
+{
+      visited[i]=true;
+	  dis[i] = d;
+	  low[i] = d;
+	  for(Integer x : adj.get(i))
+	  {
+	        if(!visited[x])
+			{
+			     parent[x] = i;
+				 ++d;
+				 dfs(adj, visited,parent, dis, low, x,d);
+				 if(low[x]<=low[i])
+				 {
+				      low[i] = low[x];
+				 }
+				 if(i==0)
+				 {
+				      freq++;
+				 }
+			}else{
+			   if(x!=parent[i])
+			   {
+			        if(dis[x]<=dis[i])
+					{
+					     low[i] = low[x];
+					}
+			   }
+			}
+	  }
+	  
+	  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
