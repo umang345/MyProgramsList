@@ -1,0 +1,92 @@
+
+// This is my implementation of Kosaraju's algorithm to find strongly connected componenets in a directed graph in java
+// The graph is represented as ArrayList<ArrayList<Ineteger>> adj
+// Main function (Not provided here) calls the kosaraju() function passing the graph and number of vertices 
+
+
+
+
+public static Stack<Integer> fillStack(boolean visited[], Stack<Integer> s,
+                                   int i, ArrayList<ArrayList<Integer>> adj)                  // To fill the stack with vertices by the end time of dfs
+    {
+         visited[i] = true;
+         for(Integer x : adj.get(i))
+         {
+             if(!visited[x])
+             {
+                 visited[x] = true;
+                 s = fillStack(visited,s,x,adj);
+             }
+         }
+         s.push(i);
+         return s;
+    }
+public static void dfs(boolean[] visited, int i, ArrayList<ArrayList<Integer>> adj)                 // dfs traversal of the graph
+    {
+        visited[i] = true;
+        for(Integer x : adj.get(i))
+        {
+            if(!visited[x])
+            {
+                dfs(visited, x, adj);
+            }
+        }
+        
+    }
+public static ArrayList<ArrayList<Integer>> graphTranspose(ArrayList<ArrayList<Integer>> adj, int V)          // To invert all the edges 
+    {                                                                                                         // i.e. to change direction of all edges
+        int count[] = new int[V];
+        for(int i=0;i<V;i++)
+        {
+            for(Integer j : adj.get(i))
+            {
+                count[i]++;
+            }
+        }
+        for(int i=0;i<V;i++)
+        {
+            for(int j = 0;j<count[i];j++)
+            {
+                int x = adj.get(i).get(0);
+                adj.get(x).add(i);
+                adj.get(i).remove(0);
+            }
+            
+        }
+        return adj;
+        
+    }
+public static int kosaraju(ArrayList<ArrayList<Integer>> adj, int V)                                 // function which implements the algorithm
+    {
+        Stack<Integer> s = new Stack<Integer>();
+        boolean visited[] = new boolean[V];
+        
+        for(int i=0;i<V;i++)
+        {
+            if(!visited[i])
+            {
+                s = fillStack(visited,s,i,adj);
+            }
+        }
+       
+        
+        adj = graphTranspose(adj,V);
+
+     
+       
+        int count=0;
+        Arrays.fill(visited, false);
+        while(!s.isEmpty())
+        {
+            int x = s.pop();
+            if(!visited[x])
+            {
+                count++;
+                dfs(visited, x, adj);
+            }
+            
+        }
+        return count;
+        
+        
+    }
