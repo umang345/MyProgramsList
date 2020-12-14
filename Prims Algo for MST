@@ -1,0 +1,130 @@
+//This is my implementation of Prims's Algorithm to find miminum spanning tree
+//This code works for 1 based indexing
+
+
+import java.util.*;
+
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int V = sc.nextInt();
+        int E = sc.nextInt();
+         Prims obj = new Prims(V,E);
+         while(E-->0)
+         {
+               int u = sc.nextInt();
+               int v = sc.nextInt();
+               int w = sc.nextInt();
+               obj.addEdge(u,v,w);
+         }
+         obj.getMST();
+
+    }
+}
+
+class Prims {
+    int V, E;
+    ArrayList<ArrayList<Integer>> g;
+
+    Prims(int V, int E) {
+        this.V = V;
+        this.E = E;
+        g = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < V + 1; i++) {
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int j = 0; j < V + 1; j++) {
+                list.add(0);
+            }
+            g.add(list);
+        }
+    }
+
+    public void addEdge(int u, int v, int w) {
+        g.get(u).set(v, w);
+        g.get(v).set(u, w);
+    }
+
+    public int findMin(boolean vis[], int dis[], int x) {
+        int min = Integer.MAX_VALUE;
+        int in = -1;
+        for (int i = 1; i <vis.length;i++)
+        {
+              if(!vis[i])
+              {
+                    if(dis[i]<min)
+                    {
+                         min = dis[i];
+                         in = i;
+                    }
+              }
+        }
+        return in;
+    }
+
+    public void getMST() {
+        boolean visited[] = new boolean[V + 1];
+        int parent[] = new int[V + 1];
+        int dis[] = new int[V + 1];
+        Arrays.fill(parent, -1);
+        Arrays.fill(dis, Integer.MAX_VALUE);
+        dis[1]=0;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(1);
+        visited[1] = true;
+        while (!q.isEmpty()) {
+            int x = q.poll();
+            visited[x] = true;
+
+            for(int i=1;i<=V;i++)
+            {
+                 if(g.get(x).get(i)!=0 && !visited[i]) {
+                     if (dis[i] > g.get(x).get(i))
+                     {
+                          dis[i] = g.get(x).get(i);
+                          parent[i] = x;
+                     }
+                 }
+            }
+            int min = findMin(visited,dis,x);
+            if(min!=-1)
+            {
+                  q.add(min);
+            }else{
+                break;
+            }
+        }
+        StringBuilder sb = new StringBuilder("");
+        for(int i=2;i<=V;i++)
+        {
+             sb.append(i).append(" ").append(parent[i]).append("\n");
+        }
+        System.out.println(sb.toString());
+        
+
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
