@@ -1,1 +1,133 @@
+// This is my implementation of Kruskal's Algorithm for finding the minimum spanning tree
+// It uses the disjoint set union
+// First line of input contains V(Number of vertices) and E(Number of edges)
+// Next E lines contain E edges:  u(starting vertices) , v(ending vertex), w(weight on vertex)
+// Output prints V-1 lines, listing the starting and ending vertices of the edge selected in MST
+// The code takes input and gives output in 1 based indexing but performs the operation in 0 based indexing
+
+/* Sample input : 
+*   8 9
+*   2 3 1
+*   7 6 2
+*   4 3 3
+*   3 7 3
+*   6 5 5
+*   1 2 6
+*   4 6 8
+*   1 4 9
+*   4 8 11
+* OUTPUT : 
+*   2 3
+*   7 6
+*   4 3
+*   3 7
+*   6 5
+*   1 2
+*   4 8   */
+
+
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int V = sc.nextInt();
+        int E = sc.nextInt();
+        Kruskal obj = new Kruskal(V, E);
+        while (E-- > 0) {
+            int u = sc.nextInt();
+            u--;
+            int v = sc.nextInt();
+            v--;
+            int w = sc.nextInt();
+            obj.addEdge(u, v, w);
+        }
+        obj.printMST();
+
+
+    }
+}
+
+class Kruskal
+{
+          ArrayList<Edge> edges;
+          ArrayList<ArrayList<Integer>> g;
+          int V,E;
+
+          Kruskal(int v, int e) {
+            V = v;
+            E = e;
+            edges = new ArrayList<Edge>();
+            g = new ArrayList<ArrayList<Integer>>();
+            for(int i=0;i<V;i++)
+            {
+                ArrayList<Integer> list = new ArrayList<>();
+                g.add(list);
+            }
+        }
+        public void addEdge(int u, int v,int w)
+        {
+              Edge ed = new Edge(u,v,w);
+              edges.add(ed);
+              g.get(u).add(v);
+              g.get(v).add(u);
+        }
+        private int findParent(int parent[], int i)
+        {
+              if(parent[i]!=-1)
+              {
+                    return findParent(parent, parent[i]);
+              }
+              return i;
+        }
+        public void printMST()
+        {
+              int parent[] = new int[V];
+              Arrays.fill(parent,-1);
+              Collections.sort(edges, new SortByW());
+              int count=0;
+              int index=0;
+              StringBuilder sb = new StringBuilder("");
+              while(count<=V-1)
+              {
+                   Edge ed = edges.get(index);
+                   int xp = findParent(parent,ed.u);
+                   int yp = findParent(parent, ed.v);
+                   if(xp!=yp)
+                   {
+                         count++;
+                         sb.append(ed.u+1).append(" ").append(ed.v+1).append("\n");
+                         parent[xp] = yp;
+                   }
+                   index++;
+                   if(index==edges.size())
+                   {
+                       break;
+                   }
+              }
+            System.out.println(sb.toString());
+
+        }
+}
+
+class SortByW implements Comparator<Edge>
+{
+        @Override
+        public int compare(Edge a, Edge b) {
+            return a.w-b.w;
+        }
+}
+
+class Edge
+{
+         int u,v,w;
+         public Edge(int u, int v, int w)
+         {
+               this.u = u;
+               this.v = v;
+               this.w = w;
+         }
+}
+
 
